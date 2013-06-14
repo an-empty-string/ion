@@ -1,0 +1,13 @@
+import hashlib
+import i3.models
+
+# Auth helper functions
+def is_valid_login(username, password):
+    passwd_hash = hashlib.sha256(password).hexdigest()
+    matching = i3.models.User.query.filter(
+            i3.models.User.username == username,
+            i3.models.User.passwd_hash == passwd_hash).all()
+    if len(matching) == 1:
+        return (username, matching.uid)
+    return False
+

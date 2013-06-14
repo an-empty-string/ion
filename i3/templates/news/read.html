@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}News{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="span3" id="newslist">
+        <ul class="nav nav-list well affix" style="min-width:15%;max-width:15%; overflow-y: auto; max-height:80%;">
+            {% if is_in_group("admin_news") %}
+            <li class="nav-header">Actions</li>
+            <li><a href="#postmodal" data-toggle="modal">Post</a></small></li>
+            {% endif %}
+            <li class="nav-header">News posts</li>
+            {% for i in posts %}
+            <li id="newsitem{{ i.pid }}" style="display:{% if not has_read_item(i.pid) %}block{% else %}none{% endif %}"><a href="#news{{ i.pid }}">{{ i.title | truncate30 }}</a></li>
+            {% endfor %}
+            <li class="nav-header">Archived news posts</li>
+            {% for i in posts %}
+            <li id="newsitemarchived{{ i.pid }}" style="display:{% if has_read_item(i.pid) %}block{% else %}none{% endif %}"><a href="#newsmuted{{ i.pid }}" display>{{ i.title | truncate30 }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+<div class="span9">
+<!-- NEWS POST MODAL -->
+{% if is_in_group("admin_news") %}
+<div id="postmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="postModal" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="postmodalHead">Post news</h3>
+    </div>
+    <div class="modal-body">
+        <form action="{{ url_for('news_post') }}" method="POST">
+            <label for="form-title">Post title</label>
+            <input type="text" name="title" id="form-title" placeholder="Post title..."><br>
+            <label for=form-contents">Post contents</label>
+            <textarea rows="10" style="width:90%" name="contents" id="form-contents" placeholder="Post contents..."></textarea><br>
+            <input type="submit" value="Post news..." class="btn btn-primary">
+        </form>
+    </div>
+</div>
+{% endif %}
+<!-- END NEWS POST MODAL -->
+
+{% for i in posts %}
+<!-- ADMIN POST FUNCTIONS -->
+<!-- Delete modal dialog -->
+{% if is_in_group("admin_news") %}
+<div id="deletemodal{{ i.pid }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="delModal" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="deletemodalHead">Are you sure?</h3>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you wish to delete this news post, "{{ i.title }}"? This cannot be undone.</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-target="#deletemodal{{ i.pid }}" data-dismiss="modal">No</a>
+    <a href="#" onclick="$.ajax({url: '{{ url_for('news_delete', pid=i.pid) }}'}); $('#news{{ i.pid }}').slideUp(); $('#newsitem{{ i.pid }}').slideUp(); $('#news_unread_badge').load('{{ url_for('api_news_total_unread') }}'); $('#deletemodal{{ i.pid }}').modal('hide')" class="btn btn-warning">Yes</a>
+  </div>
+</div>
+<!-- End delete modal dialog -->
+<!-- Edit modal dialog -->
+<div id="editmodal{{ i.pid }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="edModal" aria-hidden="true">
+</div>
+<!-- End edit modal dialog -->
+
+{% endif %}
+<!-- END ADMIN POST FUNCTIONS -->
+
+<!-- CONTENTS OF POST -->
+<div id="news{{ i.pid }}"{% if has_read_item(i.pid) %} style="display:none"{% endif %}>
+    <h2>{{ i.title }}</h2>
+    <div id="newscontent{{ i.pid }}">
+<small>
+{% if is_in_group("admin_news") %}
+    <a onclick="$.ajax({url: '{{ url_for('news_edit', pid=i.pid) }}'}).done(function(rT){document.getElementById('editmodal{{ i.pid }}').innerHTML=rT;});" href="#editmodal{{ i.pid }}" data-toggle="modal">Edit</a> | 
+
+    <a href="#deletemodal{{ i.pid }}" data-toggle="modal">Delete</a> |
+    {% endif %}
+    {% if session.username %}
+    <a href="#news{{ i.pid }}" onclick="$.ajax({url: '{{ url_for('api_news_set_read', pid=i.pid) }}'}); $('#news{{ i.pid }}').slideUp(); $('#newsitem{{ i.pid }}').slideUp(); $('#newsmuted{{ i.pid }}').slideDown(); $('#newsitemarchived{{ i.pid }}').slideDown(); $('#news_unread_badge').load('{{ url_for('api_news_total_unread') }}'); ">Mark read</a>
+    {% endif %}
+    <br>
+    <i>Posted on {{ ctime(i.time_posted) }}</i>
+    <br>
+</small>
+{{ i.contents | breaks2html | safe }}<br>
+</div>
+</div>
+<!-- END NEWSPOST {{ i.title }} -->
+{% endfor %}
+{% for i in posts %}
+<!-- MUTED NEWSPOST -->
+<div id="newsmuted{{ i.pid }}"{% if not has_read_item(i.pid) %} style="display:none"{% endif %} class="muted">
+    <h2 class="muted">{{ i.title }}</h2>
+    <a href="#newsmuted{{ i.pid }}" onclick="$.ajax({url: '{{ url_for('api_news_set_unread', pid=i.pid) }}'}); $('#news{{ i.pid }}').slideDown(); $('#newsitem{{ i.pid }}').slideDown(); $('#newsmuted{{ i.pid }}').slideUp(); $('#newsitemarchived{{ i.pid }}').slideUp(); $('#news_unread_badge').load('{{ url_for('api_news_total_unread') }}'); ">Mark unread</a>
+    <br>
+    <i>{{ i.contents | truncate120 }}</i>
+</div>
+{% endfor %}
+</div>
+
+</div>
+{% endblock %}

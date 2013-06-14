@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Ion :: {% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='bootstrap-responsive.css') }}" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; 
+      }
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+    </style>
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="{{ url_for('news_read') }}">Ion</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+                <!-- nav links -->
+                <!-- NEWS -->
+                <li><a href="{{ url_for('news_read') }}">News <span class="badge" id="news_unread_badge">{{ total_unread_items() }}</span></a></li>
+                <!-- END NEWS -->
+                <!-- LOGIN/LOGOUT -->
+                {% if session.username %}
+                <li><a href="{{ url_for('auth_logout') }}">Logout ({{ session.username }})</a></li>
+                {% else %}
+                <li><a href="{{ url_for('auth_login') }}">Login</a></li>
+                {% endif %}
+                <!-- END LOGIN/LOGOUT -->
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+  </div>
+  <div class="container">
+      {% for category, message in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}{% block content %}{% endblock %}
+    </div> <!-- /container -->
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-transition.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-alert.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-dropdown.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-scrollspy.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-tab.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-tooltip.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-popover.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-button.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-collapse.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-carousel.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-typeahead.js') }}"></script>
+
+  
+
+</body></html>
