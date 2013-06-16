@@ -1,3 +1,4 @@
+
 <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3 id="editHead">Edit news post</h3>
@@ -13,4 +14,6 @@
             <div class="modal-footer">
                 <input type="submit" value="Edit post..." class="btn btn-primary" onclick="$('#editform{{ pid }}').submit()">
             </div>
-
+<script>
+            tinymce.init({selector:'textarea'});
+        </script>

@@ -1,5 +1,5 @@
 from i3 import app
-from i3.views import news, auth
+from i3.views import news, auth, umanage
 GP = ["GET", "POST"]
 ## Configuration
 DEFAULT_VIEW = news.news_read
@@ -22,6 +22,18 @@ app.add_url_rule('/api/news/setunread/<int:pid>/',
         view_func = news.api_news_set_unread)
 app.add_url_rule('/api/news/numberunread/',
         view_func = news.api_news_total_unread)
+## User Management
+app.add_url_rule('/userman/list/', view_func = umanage.list_users)
+app.add_url_rule('/userman/listperms/<int:uid>/', 
+        view_func = umanage.list_perms)
+app.add_url_rule('/api/userman/create/', view_func=umanage.create_user,
+        methods = ["POST"])
+app.add_url_rule('/api/userman/delete/', view_func=umanage.delete_user,
+        methods = ["POST"])
+app.add_url_rule('/api/userman/addperm/', 
+        view_func = umanage.add_perm, methods = ["POST"])
+app.add_url_rule('/api/userman/delperm/',
+        view_func = umanage.del_perm, methods = ["POST"])
 ## Auth
 app.add_url_rule('/login/', view_func = auth.auth_login, methods=GP)
 app.add_url_rule('/logout/', view_func = auth.auth_logout)

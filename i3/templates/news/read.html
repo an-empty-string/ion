@@ -74,7 +74,7 @@
     <div id="newscontent{{ i.pid }}">
 <small>
 {% if is_in_group("admin_news") %}
-    <a onclick="$.ajax({url: '{{ url_for('news_edit', pid=i.pid) }}'}).done(function(rT){document.getElementById('editmodal{{ i.pid }}').innerHTML=rT;});" href="#editmodal{{ i.pid }}" data-toggle="modal">Edit</a> | 
+<a onclick="$.ajax({url: '{{ url_for('news_edit', pid=i.pid) }}'}).done(function(rT){document.getElementById('editmodal{{ i.pid }}').innerHTML=rT;});" href="#editmodal{{ i.pid }}" data-toggle="modal">Edit</a> | 
 
     <a href="#deletemodal{{ i.pid }}" data-toggle="modal">Delete</a> |
     {% endif %}

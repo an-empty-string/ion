@@ -71,12 +71,12 @@ def news_post():
     try:
         title = request.form["title"]   
         contents = request.form["contents"]
-        post = i3.models.NewsPost(title, contents)
+        post = i3.models.NewsPost(title, contents, time_posted = time.time())
         i3.database.db_session.add(post)
         i3.database.db_session.commit()
         flash("News posted.", "success")
-    except:
-        flash("There was an error posting news.", "error")
+    except Exception, e:
+        flash("There was an error posting news.\n%s" % repr(e), "error")
     finally:
         return redirect(url_for("news_read"))
 

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}List Users{% endblock %}
+{% block content %}
+<div id="delmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Delete user</h3>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this user?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+    <button id="delbtn" class="btn btn-danger" onclick="
+        $('#delbtn').button('loading'); $.ajax({method: 'POST', url: '{{ url_for('delete_user') }}', data: {uid: window.udel}}); $('#delbtn').button('reset'); $('#delmodal').modal('hide'); $('#userrow'+window.udel.toString()).slideUp();" data-loading-text="Deleting user...">Yes</button>
+  </div>
+</div>
+
+<div id="addmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="mymodal">Create user</h3>
+    </div>
+    <div class="modal-body">
+        Username<br> <input id="uname" type="text" name="username" placeholder="Username..." /><br>
+        Password<br> <input id="passwd" type="password" name="password" placeholder="Password..."></br>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" onclick="formdata={}; formdata['username']=$('#uname').val(); formdata['password']=$('#passwd').val(); $.ajax({url: '{{ url_for('create_user') }}', data: formdata, method: 'POST'}).done(function(r){alert(r);}); $('#addmodal').modal('hide'); location.reload(true);">Create user</button>
+    </div>
+</div>
+<h1>View users</h1>
+<button class="btn btn-primary" onclick="$('#addmodal').modal('show');">Create user</button><br><br>
+<table class="table table-striped table-bordered table-hover">
+    <tr><th>User ID</th><th>Username</th><th>Permissions</th><th>Delete</th></tr>
+    {% for i in users %}
+    <tr id="userrow{{ i.uid }}">
+        <td>{{ i.uid }}</td>
+        <td>{{ i.username }}</td>
+        <td><a class="btn btn-small btn-primary" href="{{ url_for('list_perms', uid=i.uid) }}">Manage permissions</a></td>
+        <td><button class="btn btn-small btn-danger" onclick="$('#delmodal').modal('show'); window.udel={{ i.uid }};">Delete user</button></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
     <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='bootstrap-responsive.css') }}" rel="stylesheet">
     <style>
@@ -55,8 +56,15 @@
             <ul class="nav">
                 <!-- nav links -->
                 <!-- NEWS -->
+                {% if session.username %}
                 <li><a href="{{ url_for('news_read') }}">News <span class="badge" id="news_unread_badge">{{ total_unread_items() }}</span></a></li>
+                {% endif %}
                 <!-- END NEWS -->
+                <!-- USER MANAGEMENT -->
+                {% if is_in_group("admin_user") %}
+                <li><a href="{{ url_for('list_users') }}">Users</a></li>
+                {% endif %}
+                <!-- END USER MANAGEMENT -->
                 <!-- LOGIN/LOGOUT -->
                 {% if session.username %}
                 <li><a href="{{ url_for('auth_logout') }}">Logout ({{ session.username }})</a></li>
@@ -69,12 +77,18 @@
         </div>
       </div>
   </div>
+  <script>
+      setTimeout(function() {
+          $(".alert").slideUp();
+          }, 3000);
+  </script>
   <div class="container">
+      <div id="alerts">
       {% for category, message in get_flashed_messages(with_categories=True) %}
-        <div class="alert alert-{{ category }}">
+        <div class="alert alert-{{ category }} fade in">
             {{ message }}
         </div>
-        {% endfor %}{% block content %}{% endblock %}
+        {% endfor %}</div>{% block content %}{% endblock %}
     </div> <!-- /container -->
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-transition.js') }}"></script>

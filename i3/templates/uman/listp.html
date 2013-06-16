@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}List Permissions{% endblock %}
+{% block content %}
+<h1>Permissions</h1>
+<form class="form-inline">
+<input type="text" placeholder="Permission..." id="ptext" />
+<button class="btn btn-primary" onclick="$.ajax({method: 'POST', url: '{{ url_for('add_perm') }}', data: {uid: {{ uid }}, permission: $('#ptext').val()}}); location.reload(true)">Grant permission</button>
+</form>
+<table class="table table-striped table-bordered table-hover">
+    <tr><th>Permission</th><th>Revoke</th></tr>
+    {% for i in perms %}
+    <tr id="perm{{ i.mapid }}"><td>{{ i.permission }}</td><td><a class="btn btn-small btn-warning" onclick="$.ajax({url: '{{ url_for('del_perm') }}', data: {mapid: {{ i.mapid }}}, method: 'POST'}); $('#perm{{ i.mapid }}').slideUp();">Revoke permission</a></td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
